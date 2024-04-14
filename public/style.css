@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+	--blue: #123C99;
+	--blue-transparent: rgba(18, 60, 153, 0.25);
+	--white: #FEF2FC;
+	--gray: #DFE2E5;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0px;
+	padding: 0px;
+	font-family: Roboto, sans-serif;
+	font-weight: 100;
+	color: #333333;
+	font-size: 1.1rem;
+}
+
+body {
+	background-color: var(--white);
+}
+
+#app {
+	height: 100vh;
+}
+
+header {
+	height: 100px;
+	background-color: var(--blue);
+	padding-left: 25px;
+	width: 100%;
+	display: table;
+}
+
+header img {
+	display: table-cell;
+	cursor: pointer;
+}
+
+#title {
+	font-size: 2.6rem;
+	color: var(--white);
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.center {
+	width: 600px;
+	background-color: var(--gray);
+	margin: auto;
+	margin-top: 100px;
+	box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+	padding: 100px;
+	text-align: center;
+}
+
+label {
+	display: block;
+	text-align: left;
+	padding-bottom: 0.5rem;
+}
+
+input {
+	width: 400px;
+	padding: 1rem;
+	outline: none;
+	border: none;
+	background-color: var(--white);
+	outline: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+input:hover, input:focus {
+	background-color: #FFFFFF;
+}
+
+button {
+	padding: 1rem;
+	width: 400px;
+	margin-top: 2rem;
+	border: none;
+	background-color: var(--blue);
+	color: var(--white);
+	letter-spacing: 2px;
+	font-weight: 300;
+}
+
+input, button {
+	border-radius: 5px;
+	transition: 0.5s;
+}
+
+button:hover {
+	letter-spacing: 4px;
+	opacity: 0.9;
+	cursor: pointer;
+}
+
+h2 {
+	font-size: 2rem;
+	display: block;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	margin-bottom: 25px;
+}
+
+h3 {
+	font-size: 1.5rem;
+}
+
+#manager {
+	display: grid;
+	grid-template-columns: 175px 1fr;
+	height: calc(100vh - 100px);
+}
+
+aside {
+	height: 100%;
+	background-color: var(--gray);
+	grid-column: 1 / 2;
+	display: grid;
+	grid-template-rows: 1fr 90px;
+	overflow: auto;
+}
+
+aside ul {
+	text-align: center;
+	grid-row: 1 / 2;
+}
+
+aside ul li {
+	padding: 15px 0px;
+	border-bottom: 1px solid var(--blue-transparent);
+	transition: 0.5s;
+}
+
+aside ul li:hover {
+	cursor: pointer;
+	background-color: var(--blue-transparent);
+}
+
+aside button {
+	width: 100%;
+	font-size: 0.8rem;
+	border-radius: 0px;
+	grid-row: 2 /3;
+}
+
+#manager div {
+	padding: 5%;
+}
+
+h1:not(#title) {
+	font-size: 2.5rem;
+	border-bottom: 15px solid var(--blue);
+	display: inline-block;
+	padding-bottom: 2%;
+	padding-right: 15%;
+	margin-bottom: 5%;
+	font-weight: 300;
+}
+
+#app #chartDiv {
+	width: 80%;
+	height: 400px;
+	background-color: var(--gray);
+	text-align: center;
+}
+
+#form {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	max-width: 1000px;
+}
+
+#form label {
+	margin-top: 10px;
+}
+
+#form section input {
+	width: 80%;
+}
+
+#form section input[type=checkbox] {
+	height: 40px;
+	width: 40px;
+}
+
+#form button {
+	width: 80%;
+}
+
+.left {
+	grid-column: 1 / 2;
+}
+
+.right {
+	grid-column: 2 / 3;
+}
+
+.full-length, #form button.full-length {
+	grid-column: 1 / 3;
+	width: 90%;
+}
+
+#form #date-input {
+	width: 100%;
+}
+
+#alerts {
+	position: absolute;
+	width: 100vw;
+	text-align: center;
+	list-style: none;
+}
+
+.alert {
+	padding: 10px;
+	color: var(--white);
+	background-color: rgba(221, 51, 51, 0.95);
+	margin-bottom: 2px;
+}
+
+#alerts.manager {
+	width: calc(100% - 175px);
+	right: 0px;
+}
+
+.alert div {
+	float: right;
+	color: var(--white);
+	user-select: none;
+	cursor: pointer;
+	font-weight: 300;
+}
+
+#activeEmployees ul {
+	list-style: none;
+}
+
+#activeEmployees ul li {
+	border-bottom: 1px solid var(--blue-transparent);
+	padding: 15px;
+}
+
+#activeEmployees ul li:nth-of-type(2n) {
+	background-color: var(--gray);
+}
+
+#activeEmployees ul li span {
+	background-color: var(--blue);
+	color: var(--white);
+	border-radius: 5px;
+	padding: 10px;
+	margin-left: 10px;
+	user-select: none;
+	cursor: pointer;
+	opacity: 0;
+	transition: 0.5s;
+}
+
+#activeEmployees ul li:hover span {
+	opacity: 1;
+}
+
+[v-cloak] {
+	display: none;
+}
+
+#logout {
+	color: white;
+	height: 50px;
+	width: 50px;
+	margin: 25px 0px;
+}

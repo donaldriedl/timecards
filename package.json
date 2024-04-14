@@ -1,0 +1,31 @@
+{
+  "name": "s22-project1-riedldsr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csse4200/s22-project1-riedldsr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csse4200/s22-project1-riedldsr/issues"
+  },
+  "homepage": "https://github.com/csse4200/s22-project1-riedldsr#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "mongodb": "^4.3.1",
+    "mongoose": "^6.2.1",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "vue": "^3.2.30"
+  }
+}

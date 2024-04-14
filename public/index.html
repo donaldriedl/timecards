@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Totally Real Timecard System</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="app">
+			<header>
+				<img src="logo.png" alt="Totally Real Company Logo">
+				<h1 id="title">Totally Real Timecard System</h1>
+				<img src="logout.svg" id="logout" v-if="currentPage != 'login'" v-on:click="deleteSession()">
+			</header>
+
+			<ul id="alerts" v-if="alerts.length > 0" v-bind:class="{ manager: currentPage == 'manager' }" v-cloak>
+				<li class="alert" v-for="index in alerts.length">{{ alerts[index - 1] }}<div v-on:click="alerts.splice(index -1, 1)">X</div></li>
+			</ul>
+
+			<!------------   Log In   ------------->
+			<div id="login" class="center" v-if="currentPage == 'login'">
+				<label name="employeeId">Employee ID</label>
+				<input type="text" name="employeeId" v-model="loginEmployeeId">
+				<label name="password">Password</label>
+				<input type="password" name="password" v-model="loginPassword">
+				<button v-on:click="userLogin">Login</button>
+				<!-- <button v-on:click="changePage('manager'), changeView('home'), getActiveEmployees()">Management</button> -->
+			</div>
+
+			<!------------   Punch In / Punch Out ------------->
+			<div id="employee" class="center" v-if="currentPage == 'employee'" v-cloak>
+				<h2>Welcome, {{ selectedEmployee.fName }}!</h2>
+				<h3>{{ currentDate }}</h3>
+				<h3>{{ currentTime }}</h3>
+				<button v-on:click="employeePunchIn" v-if="!punchedIn">Punch In</button>
+				<button v-on:click="employeePunchOut" v-if="punchedIn">Punch Out</button>
+			</div>
+
+			<!------------   Manager Page   ------------->
+			<div id="manager" class="full-height" v-if="currentPage == 'manager'" v-cloak>
+				<aside v-if="managerView == 'home' || managerView == 'newEmployee'" v-cloak>
+					<ul id="employee-list">
+						<li v-for="employee in employeeList" v-on:click="selectEmployee(employee); changeView('existingEmployee')">{{ employee.lName }}, {{ employee.fName }}</li>
+					</ul>
+					<button v-on:click="changeView('newEmployee')">New Employee</button>
+				</aside>
+				
+				<aside v-if="managerView == 'existingEmployee' || managerView == 'newTimecard' || managerView == 'existingTimecard'" v-cloak>
+					<ul id="employee-list">
+						<li v-for="timecard in selectedEmployee.timecards" v-on:click="selectTimecard(timecard)">{{ timecard.date }}</li>
+					</ul>
+					<button v-on:click="changeView('newTimecard')">New Timecard</button>
+				</aside>
+
+				<!------------ Home View ---------->
+				<div id="home" v-if="managerView == 'home'" v-cloak>
+					<h1>Welcome!</h1>
+					<div id="activeEmployees">
+						<h2>Active Employees</h2>
+						<ul>
+							<li v-for="employee in activeEmployees">{{ employee.name }} <span v-on:click="employeePunchOutByManager(employee.id)">Punch Out</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<!------------ Add Employee View ---------->
+				<div id="add-employee" v-if="managerView == 'newEmployee'" v-cloak>
+					<h1>New Employee</h1>
+					<div id="form">
+						<section class="left">
+							<label name="firstName">First Name</label>
+							<input type="text" name="firstName" v-model="employeeFirstName">
+						</section>
+
+						<section class="right">
+							<label name="lastName">Last Name</label>
+							<input type="text" name="lastName" v-model="employeeLastName">
+						</section>
+
+						<br />
+
+						<section class="left">
+							<label name="employeeId">Employee ID</label>
+							<input type="text" name="employeeId" v-model="employeeId">
+						</section>
+
+						<section class="right">
+							<label name="payRate">Pay Rate</label>
+							<input type="text" name="payRate" v-model="employeePayRate">
+						</section>
+
+						<section class="left">
+							<label name="employeePassword">Password</label>
+							<input type="password" name="employeePassword" v-model="employeePassword">
+						</section>
+
+						<section class="right">
+							<label name="supervisor">Supervisor</label>
+							<input type="checkbox" name="supervisor" v-model="employeeSupervisor">
+						</section>
+						
+						<button v-on:click="addEmployee">Add Employee</button>
+						<button v-on:click="clearEmployeeInputs()">Cancel</button>
+					</div>
+				</div>
+
+				<!----------- Existing Employee View ----------->
+				<div id="existing-employee" v-if="managerView == 'existingEmployee'" v-cloak>
+					<h1>{{ selectedEmployee.fName }} {{ selectedEmployee.lName }}</h1>
+					<div id="form">
+						<section class="left">
+							<label name="firstName">First Name</label>
+							<input type="text" name="firstName" v-model="employeeFirstName">
+						</section>
+
+						<section class="right">
+							<label name="lastName">Last Name</label>
+							<input type="text" name="lastName" v-model="employeeLastName">
+						</section>
+
+						<br />
+
+						<section class="left">
+							<label name="employeeId">Employee ID</label>
+							<input type="text" name="employeeId" v-model="employeeId">
+						</section>
+
+						<section class="right">
+							<label name="payRate">Pay Rate</label>
+							<input type="text" name="payRate" v-model="employeePayRate">
+						</section>
+
+						<section class="left">
+							<label name="employeePassword">New Password</label>
+							<input type="password" name="employeePassword" v-model="employeePassword">
+						</section>
+
+						<section class="right">
+							<label name="supervisor">Supervisor</label>
+							<input type="checkbox" name="supervisor" v-model="employeeSupervisor">
+						</section>
+
+						<button v-on:click="updateEmployeeInfo">Update</button>
+						<button v-on:click="clearEmployeeInputs()">Cancel</button>
+						<button class="full-length" v-on:click="deleteEmployee()">Delete Employee</button>
+					</div>
+				</div>
+
+				<!-----------  New Timecard  ------------->
+				<div id="new-timecard" v-if="managerView == 'newTimecard'" v-cloak>
+					<h1>{{ selectedEmployee.fName }} {{ selectedEmployee.lName }} - New Timecard</h1>
+					<div id="form">
+						<section class="full-length">
+							<label name="timecardDate">Timecard Date</label>
+							<input id="date-input" type="date" name="timecardDate" v-model="timecardDate">
+						</section>
+
+						<section class="left">
+							<label name="startTime">Start Time</label>
+							<input type="time" name="startTime" v-model="timecardStart">
+						</section>
+
+						<section class="right">
+							<label name="endTime">End Time</label>
+							<input type="time" name="endTime" v-model="timecardEnd">
+						</section>
+
+						<button class="left" v-on:click="createTimecard(); changeView('existingEmployee')">Create</button>
+						<button class="right" v-on:click="clearTimecardInputs(); changeView('existingEmployee')">Cancel</button>
+					</div>
+				</div>
+
+				<!-----------  Existing Timecard  ------------->
+				<div id="existing-timecard" v-if="managerView == 'existingTimecard'" v-cloak>
+					<h1>{{ selectedEmployee.fName }} {{ selectedEmployee.lName }} - {{ selectedTimecard.date }}</h1>
+					<div id="form">
+						<section class="left">
+							<label name="startTime">Start Time</label>
+							<input type="time" name="startTime" v-model="timecardStart">
+						</section>
+
+						<section class="right">
+							<label name="endTime">End Time</label>
+							<input type="time" name="endTime" v-model="timecardEnd">
+						</section>
+
+						<button class="left" v-on:click="updateTimecard()">Update</button>
+						<button class="right" v-on:click="clearTimecardInputs(); changeView('existingEmployee')">Cancel</button>
+						<button class="full-length" v-on:click="deleteTimecard">Delete Timecard</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+		<script src="vue.js"></script>
+	</body>
+</html>
